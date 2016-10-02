@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Video klub</title>
+    </h:head>
+    <h:body>
+
+        <ui:composition template="./WEB-INF/Template.xhtml" >
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="formaClana.css" />
+                <p:panel id="panelClanCeo" header="Clan" >
+                    <h:panelGrid id="panelClan" columns="3" columnClasses="detaljiClana,detaljiClana,detaljiClana">
+
+                        <h:form id="frmClan">
+                            <h:panelGrid id="pnlgPodaciClana" columns="2" >
+
+
+                                <p:outputLabel value="Ime: " />
+                                <p:inputText value="#{mBClan.trenutniClan.ime}" readonly="true"/>
+
+                                <p:outputLabel value="Prezime: " />
+                                <p:inputText value="#{mBClan.trenutniClan.prezime}" readonly="true"/>
+
+                                <p:outputLabel value="JMBG: " />
+                                <p:inputText value="#{mBClan.trenutniClan.jmbg}" readonly="true"/>
+
+                                <p:outputLabel value="Telefon: " />
+                                <p:inputText value="#{mBClan.trenutniClan.telefon}" readonly="true"/>
+
+                                <p:outputLabel value="Datum uclanjenja: " />
+                                <p:calendar id="calDatumUclanjena" pattern="dd.MM.yyyy" value="#{mBClan.trenutniClan.datumosnivanja}" locale="sr" timeZone="CET" readonly="true"/>
+
+                                <p:outputLabel value="Ulica i broj: " />
+                                <p:inputText value="#{mBClan.trenutniClan.ulicaibroj}" readonly="true"/>
+
+                                <p:outputLabel for="cmbMesto" value="Mesto " />
+                                <p:selectOneMenu id="cmbMesto" value="#{mBClan.trenutniClan.mestoid}" converter="mestoKNV">
+                                    <f:selectItems value="#{mBClan.listaMesta}" var="mesto" itemValue="#{mesto}" itemLabel="#{mesto.naziv}" />
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+                        </h:form>
+
+                        <p:panel header="Zaduzenja">
+                            <h:form id="frmZaduzenjaClana">
+                                <h:panelGrid id="pnlgZaduzenjaClana" columns="1">
+                                    <p:dataTable value="#{mBClanZaduzenje.listaZaduzenja}" var="zaduzenje" id="dataTableZaduzenja" class="someclass"
+                                                 rows="4" paginator="true" emptyMessage="Nema unetih zaduzenja">
+
+                                        <p:column headerText="Film" >
+                                            #{zaduzenje.kopija.film.naziv}
+                                        </p:column>
+
+                                        <p:column headerText="Rbr kopije" >
+                                            #{zaduzenje.kopija.rbr}
+                                        </p:column>
+
+                                        <p:column headerText="Datum Zaduzenja" >
+                                            <p:outputLabel value="#{zaduzenje.datumzaduzenja}">
+                                                <f:convertDateTime pattern="dd.MM.yyyy" locale="sr" timeZone="CET"/>
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column headerText="Status">
+                                            #{zaduzenje.statuszaduzenja}
+                                        </p:column>
+
+                                        <p:column style="width:40px;text-align: center" headerText="Izmeni status" >
+                                            <p:commandButton update=":frmIzmenaStatusa" action="#{mBClan.vidljivostIzmene(true)}" 
+                                                             icon="ui-icon-pencil" title="Izmeni status" disabled="#{zaduzenje.statuszaduzenja eq 'vraceno' ? true : false}">
+                                                <f:setPropertyActionListener value="#{zaduzenje}" target="#{mBClan.zaduzenje}" />
+                                            </p:commandButton>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </h:panelGrid>
+                                <p:commandButton update=":frmDijalog" action="#{mBClan.kreirajZaduzenje()}" value="Dodaj zaduzenje"/>
+
+                            </h:form>
+                            <h:form id="frmDijalog">
+                                <p:dialog id="dlgDodajZaduzenje" widgetVar="dlgDodajZaduzenje" closable="false" 
+                                          visible="#{mBClan.vidljivostZaduzenja}" modal="true" draggable="false" position="center" dynamic="true">
+                                    <p:panel header="Dodaj zaduzenje">
+                                        <h:panelGrid columns="1">
+                                            <p:dataTable value="#{mBIzborFilma.listaFilmova}" var="film" 
+                                                         selectionMode="single" selection="#{mBIzborFilma.trenutniFilm}" 
+                                                         rowKey="#{film.filmid}" id="dataTableFimovi"
+                                                         rows="8" paginator="true" emptyMessage="Nema unetih filmova">
+                                                <p:ajax event="rowSelect" process="@this" update=":frmDijalog:cmbKopija" />
+                                                <p:column filterBy="#{film.naziv}" headerText="Naziv" >
+                                                    #{film.naziv}
+                                                </p:column>
+
+                                                <p:column headerText="Godina: " >
+                                                    #{film.godinasnimanja}
+                                                </p:column>
+
+                                                <p:column headerText="Zanr" >
+                                                    #{film.zanr}
+                                                </p:column>
+                                            </p:dataTable>
+
+                                            <p:outputLabel for="cmbKopija" value="Kopija: " />
+                                            <p:selectOneMenu id="cmbKopija" value="#{mBClan.zaduzenje.kopija}" converter="kopijaKNV" required="true">
+                                                <f:selectItems value="#{mBIzborFilma.trenutniFilm.kopijaList}" var="kopija" itemValue="#{kopija}" itemLabel="#{kopija.rbr}"/>
+                                                <c:if test="#{!mBIzborFilma.imaDostupnihKopija()}">
+                                                    <f:selectItem itemLabel="Nema dostupnih kopija" noSelectionOption="false" itemValue=""/>
+                                                </c:if>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="calDatumZaduzenja" value="Datum zaduzenja" />
+                                            <p:calendar id="calDatumZaduzenja" pattern="dd.MM.yyyy" value="#{mBClan.zaduzenje.datumzaduzenja}" locale="sr" timeZone="CET" required="true"/>
+
+                                        </h:panelGrid>
+                                        <p:commandButton value="Dodaj zaduzenje" action="#{mBIzborFilma.sacuvajZaduzenje()}" update="@form :frmZaduzenjaClana"/>
+                                        <p:commandButton value="Otkazi" immediate="true" action="#{mBClan.otkaziZaduzenje()}" update="@form :frmZaduzenjaClana"/>
+                                    </p:panel>
+                                </p:dialog>
+                            </h:form>
+                            <h:form id="frmIzmenaStatusa">
+                                <p:dialog id="dlgIzmenaStatusa" visible="#{mBClan.vidljivost2}" widgetVar="dlgIzmenaStatusa" closable="false" modal="true" draggable="false" position="top center" dynamic="true">
+
+                                    <p:panel header="Izmena statusa">
+                                        <h:panelGrid columns="2">
+                                            <p:outputLabel value="Datum razduzenja" />
+                                            <p:calendar id="calDatumRazduzenja" pattern="dd.MM.yyyy" value="#{mBClan.zaduzenje.datumrazduzenja}" locale="sr" timeZone="CET" required="true"/>
+                                        </h:panelGrid>
+                                        <p:commandButton value="Izmeni" action="#{mBIzborFilma.izmeniZaduzenje()}" update="@form :frmZaduzenjaClana"/>
+                                        <p:commandButton value="Otkazi" immediate="true" action="#{mBClan.vidljivostIzmene(false)}" update="@form :frmZaduzenjaClana"/>
+                                    </p:panel>
+                                </p:dialog>
+                            </h:form>
+
+
+                        </p:panel>
+
+                    </h:panelGrid>
+
+                    <h:form id="formAkcije">
+                        <p:commandButton value="Izmeni clana" action="#{mBClan.izmeniClana()}" ajax="false"/>
+                    </h:form>
+
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+
+
+    </h:body>
+</html>
+

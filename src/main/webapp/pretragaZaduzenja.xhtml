@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Video klub</title>
+    </h:head>
+    <h:body>
+
+        <ui:composition template="./WEB-INF/Template.xhtml" >
+            <ui:define name="content">
+                <h:form id="frmPretragaZaduzenja">
+                    <p:panel header="Lista zauzetih zaduzenja" >
+                        <h:panelGrid columns="2" >
+                            <p:dataTable value="#{mBZaduzenje.vratiNovuListuZaduzenja()}" var="zaduzenje" 
+                                         id="dataTableZaduzenja" rows="8" paginator="true" 
+                                         emptyMessage="Nema unetih zaduzenja">
+
+                                <p:column headerText="Zaduzenje ID" >
+                                    #{zaduzenje.zaduzenjePK.zaduzenjeid}
+                                </p:column>
+
+                                <p:column filterBy="#{zaduzenje.kopija.film.naziv}" headerText="Naziv filma" >
+                                    #{zaduzenje.kopija.film.naziv}
+                                </p:column>
+
+                                <p:column headerText="Rbr kopije" >
+                                    #{zaduzenje.kopija.rbr}
+                                </p:column>
+
+                                <p:column filterBy="#{zaduzenje.clan.clanid}" headerText="Clan ID" >
+                                    #{zaduzenje.clan.clanid}
+                                </p:column>
+                                
+                                <p:column headerText="Ime clana" >
+                                    #{zaduzenje.clan.ime}
+                                </p:column>
+                                
+                                <p:column headerText="Prezime clana" >
+                                    #{zaduzenje.clan.prezime}
+                                </p:column>
+
+                                <p:column headerText="Datum zaduzenja" >
+                                    <p:outputLabel value="#{zaduzenje.datumzaduzenja}">
+                                        <f:convertDateTime pattern="dd.MM.yyyy" locale="sr" timeZone="CET" />
+                                    </p:outputLabel>
+                                </p:column>
+                                
+                                <p:column headerText="Datum razduzenja" >
+                                    <p:outputLabel value="#{zaduzenje.datumrazduzenja}">
+                                        <f:convertDateTime pattern="dd.MM.yyyy" locale="sr" timeZone="CET"/>
+                                    </p:outputLabel>
+                                </p:column>
+
+                                <p:column style="width:40px;text-align: center" headerText="Izmeni status">
+                                    <p:commandButton update="dataTableZaduzenja" oncomplete="PF('dlgIzmenaStatusa').show()" 
+                                                     icon="ui-icon-pencil" title="Izmena statusa zaduzenja" disabled="#{zaduzenje.statuszaduzenja eq 'vraceno' ? true : false}">
+                                        <f:setPropertyActionListener value="#{zaduzenje}" target="#{mBZaduzenje.trenutnoZaduzenje}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+                <h:form>
+                    <p:dialog id="dlgIzmenaStatusa" widgetVar="dlgIzmenaStatusa" closable="true" modal="true" 
+                              draggable="false" position="top center" dynamic="true">
+                        <p:panel header="Izmena statusa">
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Datum razduzenja" />
+                                <p:calendar id="calDatumRazduzenja" pattern="dd.MM.yyyy" value="#{mBZaduzenje.trenutnoZaduzenje.datumrazduzenja}" locale="sr" timeZone="CET"/>
+                            </h:panelGrid>
+                            <p:commandButton value="Izmeni zaduzenje" action="#{mBZaduzenje.izmeniZaduzenje()}" update="@form :frmPretragaZaduzenja"/>
+                        </p:panel>
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

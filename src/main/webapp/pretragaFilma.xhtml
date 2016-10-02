@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Video klub</title>
+    </h:head>
+    <h:body>
+
+        <ui:composition template="./WEB-INF/Template.xhtml" >
+            <ui:define name="content">
+                <h:form id="frmPretragaFilmova">
+                    <p:panel header="Pretraga filmova" >
+                        <h:panelGrid columns="2" >
+                            <p:dataTable value="#{mBFilm.listaFilmova}" var="film" 
+                                         selectionMode="single" selection="#{mBFilm.trenutniFilm}" 
+                                         rowKey="#{film.filmid}" id="dataTableFimovi"
+                                         rows="8" paginator="true" emptyMessage="Nema unetih filmova">
+
+                                <p:column filterBy="#{film.naziv}" headerText="Naziv" >
+                                    #{film.naziv}
+                                </p:column>
+
+                                <p:column headerText="Godina: " >
+                                    #{film.godinasnimanja}
+                                </p:column>
+
+                                <p:column headerText="Zanr" >
+                                    #{film.zanr}
+                                </p:column>
+
+                                <p:column style="width:40px;text-align: center" headerText="Detalji">
+                                    <p:commandButton icon="ui-icon-search" title="Detalji izabranog filma" action="#{mBFilm.prikaziFilm()}">
+                                        <f:setPropertyActionListener value="#{film}" target="#{mBFilm.trenutniFilm}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+
+
+
+
+    </h:body>
+</html>
+

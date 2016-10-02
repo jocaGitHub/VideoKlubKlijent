@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Video klub</title>
+    </h:head>
+    <h:body>
+        <ui:composition template="./WEB-INF/Template.xhtml" >
+            <ui:define name="content">
+                <h:form id="frmPretragaClana">
+                    <p:panel header="Pretraga clanova" >
+                        <p:panelGrid columns="2" >
+                            <p:dataTable value="#{mBClan.vratiNovuListuClanova()}" var="clan" 
+                                         selectionMode="single" selection="#{mBClan.trenutniClan}" 
+                                         rowKey="#{clan.clanid}" id="dataTableClanovi"
+                                         rows="8" paginator="true" emptyMessage="Nema unetih članova">
+                                <p:column filterBy="#{clan.ime}" headerText="Ime" >
+                                    #{clan.ime}
+                                </p:column>
+
+                                <p:column filterBy="#{clan.prezime}" headerText="Prezime" >
+                                    #{clan.prezime}
+                                </p:column>
+
+                                <p:column headerText="JMBG" >
+                                    #{clan.jmbg}
+                                </p:column>
+
+                                <p:column headerText="Telefon" >
+                                    #{clan.telefon}
+                                </p:column>
+
+                                <p:column headerText="Datum uclanjenja" >
+                                    <p:outputLabel value="#{clan.datumosnivanja}">
+                                        <f:convertDateTime pattern="dd.MM.yyyy" />
+                                    </p:outputLabel>
+                                </p:column>
+
+                                <p:column style="width:40px;text-align: center" headerText="Detalji">
+                                    <p:commandButton action="#{mBClan.prikaziClana()}" icon="ui-icon-search" title="Prikazi detalje clana">
+                                        <f:setPropertyActionListener value="#{clan}" target="#{mBClan.trenutniClan}" />
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

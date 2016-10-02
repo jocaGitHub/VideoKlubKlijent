@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <h:outputStylesheet name="./css/stil.css"/>
+        <title>Video klub</title>
+    </h:head>
+
+    <h:body>
+
+        <div id="top" class="top">
+            
+            <h:graphicImage name="images/img_meni.jpg" width="10%"/>
+            <h:form>
+                <p:menubar id="meniBar">
+                    <p:submenu label="Clan">
+                        <p:menuitem value="Unos clana" action="#{mBClan.kreirajClana()}" ajax="false"/>
+                        <p:menuitem value="Pretraga clanova" action="#{mBClan.prikaziPretragu()}" ajax="false" />                    
+                    </p:submenu>
+                    <p:submenu label="Zaduzenje">
+                        <p:menuitem value="Pretraga zaduzenja" action="#{mBZaduzenje.prikaziPretragu()}" ajax="false" />   
+                    </p:submenu>
+                    <p:submenu label="Film">
+                        <p:menuitem value="Unos filma" action="#{mBFilm.kreirajFilm()}" ajax="false" />   
+                        <p:menuitem value="Pretraga filmova" action="#{mBFilm.prikaziPretragu()}" ajax="false" />   
+                    </p:submenu>
+                    <p:submenu label="Radnik" style="float: right;">
+                        <p:menuitem value="Odjavi se" action="#{mBPrijavaRadnika.odjavi()}" ajax="false" />   
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+    </h:body>
+
+</html>

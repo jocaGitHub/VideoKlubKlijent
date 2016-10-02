@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Video klub</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet name="resources/css/formaClana.css" />
+        <ui:composition template="./WEB-INF/Template.xhtml" >
+            <ui:define name="content">
+                <p:panel id="panelClanCeo" header="Clan" >
+                    <p:panelGrid id="panelClan" columns="3" styleClass="panelClana">
+
+                        <h:form id="frmClan">
+                            <p:panelGrid id="pnlgPodaciClana" columns="2" >
+
+
+                                <p:outputLabel value="Ime: " />
+                                <p:inputText value="#{mBClan.trenutniClan.ime}" readonly="true"/>
+
+                                <p:outputLabel value="Prezime: " />
+                                <p:inputText value="#{mBClan.trenutniClan.prezime}" readonly="true"/>
+
+                                <p:outputLabel value="JMBG: " />
+                                <p:inputText value="#{mBClan.trenutniClan.jmbg}" readonly="true"/>
+
+                                <p:outputLabel value="Telefon: " />
+                                <p:inputText value="#{mBClan.trenutniClan.telefon}" readonly="true"/>
+
+                                <p:outputLabel value="Datum uclanjenja: " />
+                                <p:calendar id="calDatumUclanjena" pattern="dd.MM.yyyy" value="#{mBClan.trenutniClan.datumosnivanja}"  readonly="true"/>
+
+                                <p:outputLabel value="Ulica i broj: " />
+                                <p:inputText value="#{mBClan.trenutniClan.ulicaibroj}" readonly="true"/>
+
+                                <p:outputLabel for="cmbMesto" value="Mesto " />
+                                <p:selectOneMenu id="cmbMesto" value="#{mBClan.trenutniClan.mestoid}" converter="mestoKNV">
+                                    <f:selectItems value="#{mBClan.listaMesta}" var="mesto" itemValue="#{mesto}" itemLabel="#{mesto.naziv}" />
+                                </p:selectOneMenu>
+
+                            </p:panelGrid>
+                        </h:form>
+
+                        <p:panel header="Zaduzenja">
+                            <h:form id="frmZaduzenjaClana">
+                                <p:panelGrid id="pnlgZaduzenjaClana" columns="1">
+                                    <p:dataTable value="#{mBClan.trenutniClan.zaduzenjeList}" var="zaduzenje" selectionMode="single" selection="#{mBClan.zaduzenje}"
+                                                 rowKey="#{zaduzenje.zaduzenjePK.zaduzenjeid}" id="dataTableZaduzenja" class="someclass" >
+
+                                        <p:column headerText="Film" >
+                                            #{zaduzenje.kopija.film.naziv}
+                                        </p:column>
+
+                                        <p:column headerText="Rbr kopije" >
+                                            #{zaduzenje.kopija.rbr}
+                                        </p:column>
+
+                                        <p:column headerText="Datum Zaduzenja" >
+                                            <p:outputLabel value="#{zaduzenje.datumzaduzenja}">
+                                                <f:convertDateTime pattern="dd.MM.yyyy" />
+                                            </p:outputLabel>
+                                        </p:column>
+
+                                        <p:column headerText="Status">
+                                            #{zaduzenje.statuszaduzenja}
+                                        </p:column>
+
+                                    </p:dataTable>
+                                    <p:panelGrid id="pnlgZaduzenjeee" columns="2" >
+
+                                        <p:column>
+                                            <p:commandButton value="Dodaj zaduzenje" action="#{mBClan.kreirajZaduzenje()}" />
+                                        </p:column>
+                                        <p:column>
+                                            <p:commandButton  action="#{mBClan.izmeniZaduzenje()}" value="Izmeni zaduzenje" />
+                                        </p:column>
+
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </h:form>
+
+<!--                            <p:dialog header="Dodavanje zaduzenja" widgetVar="dlg1" modal="true"
+                                      minHeight="200" id="dlgDodavanjeZaduzenja">-->
+<!--                                <h:form id="frmDlgDodavanjeZaduzenja">
+                                    <p:panelGrid columns="2">
+
+                                        <p:outputLabel value="Zaduzenje id" />
+                                        <p:inputText value="" />
+
+                                        <p:outputLabel value="Datum Zaduzenja" />
+                                        <p:calendar pattern="dd.MM.yyyy" id="zadDatOd" value="" />
+
+
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:commandButton value="Sacuvaj" type="submit" action="#{mBClan.sacuvajZaduzenje()}" onclick="PF('dlg1').hide();" update="@(.someclass)" />
+                                    <p:commandButton value="Otkazi" onclick="PF('dlg2').hide();" />
+                                </h:form>-->
+                            <!--</p:dialog>-->
+                            
+                            
+<!--                             <p:dialog header="Izmena zaduzenja" widgetVar="dlg2" modal="true"
+                                      minHeight="200" id="dlgIzmenaZaduzenja">-->
+<!--                                <h:form id="frmDlgIzmenaZaduzenja">
+                                    <p:panelGrid columns="2">
+
+                                        <p:outputLabel value="Datum Razduzenja" />
+                                        <p:calendar pattern="dd.MM.yyyy" id="zadDatDo" value="" />
+
+
+                                    </p:panelGrid>
+                                    <br/>
+                                    <p:commandButton value="Sacuvaj" type="submit" action="#{mBClan.sacuvajZaduzenje()}" onclick="PF('dlg1').hide();" update="@(.someclass)" />
+                                    <p:commandButton value="Otkazi" onclick="PF('dlg1').hide();" />
+                                </h:form>-->
+                            <!--</p:dialog>-->
+
+                        </p:panel>
+
+                    </p:panelGrid>
+
+                    <h:form id="formAkcije">
+                        <p:commandButton value="Izmeni clana" action="formaClanaNovi.xhtml"/>
+                    </h:form>
+
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+
+
+    </h:body>
+</html>
+

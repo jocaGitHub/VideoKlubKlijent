@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:column style="width:40px;text-align: center" headerText="Detalji">
+            <p:commandButton icon="ui-icon-search" title="Detalji izabranog filma" action="#{mBFilm.prikaziFilm()}">
+                <f:setPropertyActionListener value="#{film}" target="#{mBFilm.trenutniFilm}" />
+            </p:commandButton>
+        </p:column>
+        <p:panel id="pnlKopije" header="Kopije" visible="#{mBFilm.vidljivostPanela}">
+            <h:form id="frmKopije">
+                <p:dataTable value="#{mBFilm.trenutniFilm.kopijaList}" var="kopija" 
+                             selectionMode="single" selection="#{mBFilm.trenutnaKopija}" 
+                             rowKey="#{kopija.kopijaPK}" 
+                             id="dataTableKopija">
+
+
+                    <p:column id="kopijaID" headerText="KopijaID: " >
+                        <p:outputLabel id="redkopijaid" value="#{kopija.kopijaPK.kopijaid}">
+                        </p:outputLabel>
+                    </p:column>
+
+                    <p:column id="redBrojKopije" headerText="R.Br: " >
+                        <p:outputLabel id="redRBrKopije" value="#{kopija.rbr}">
+                        </p:outputLabel>
+                    </p:column>
+
+
+                </p:dataTable>
+                <p:commandButton value="Dodaj kopiju"  action="#{mBFilm.kreirajKopiju()}" update="dataTableKopija"/>
+
+            </h:form>
+        </p:panel>
+
+        <p:panel id="pnlUloge" header="Uloge" visible="#{mBFilm.vidljivostPanela}">
+
+            <h:panelGrid columns="2">
+                <p:column>
+                    <h:form id="frmUlogaTabela">
+                        <p:growl id="growl" showDetail="true" sticky="true" /> 
+
+                        <p:dataTable value="#{mBFilm.trenutniFilm.ulogaList}" var="uloga" 
+                                     selectionMode="single" selection="#{mBFilm.trenutnaUloga}" 
+                                     rowKey="#{uloga.ulogaPK}" 
+                                     id="dataTableUloga">
+
+
+                            <p:column id="colime" headerText="Ime: " >
+                                <p:outputLabel id="ime" value="#{uloga.osoba.ime}">
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column id="colprezime" headerText="Prezime: " >
+                                <p:outputLabel id="prezime" value="#{uloga.osoba.prezime}">
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column id="redBrojKopije" headerText="R.Br: " >
+                                <p:outputLabel id="redRBrKopije" value="#{uloga.nazivuloge}">
+                                </p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:column>
+
+                <p:column >
+                    <h:form id="frmUloga">
+                        <p:outputLabel for="cmbOsoba" value="Osoba: " />
+                        <p:selectOneMenu id="cmbOsoba" value="#{mBFilm.trenutnaUloga.osoba}"  converter="osobaKNV">
+                            <f:selectItems value="#{mBFilm.listaOsoba}" var="osoba" itemValue="#{osoba}" itemLabel="#{osoba.ime} #{osoba.prezime}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="cmbNazivUloge" value="Osoba: " />
+                        <p:selectOneMenu id="cmbNazivUloge" value="#{mBFilm.trenutnaUloga.nazivuloge}">
+                            <f:selectItems value="#{mBFilm.listaUloga}" var="nazivUloge" itemValue="#{nazivUloge}" itemLabel="#{nazivUloge}" />
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Dodaj ulogu"  action="#{mBFilm.sacuvajUlogu()}" update=":frmUlogaTabela"/>
+
+                    </h:form>
+                </p:column>
+
+            </h:panelGrid>
+        </p:panel>
+
+
+        <h:form id="frmDijalog">
+                                <p:dialog id="dlgDodajZaduzenje" widgetVar="dlgDodajZaduzenje" closable="false" 
+                                          visible="#{mBClan.vidljivostZaduzenja}" modal="true" draggable="false" position="center" dynamic="true">
+                                    <p:panel header="Dodaj zaduzenje">
+                                        <h:panelGrid columns="2">
+
+                                            <p:outputLabel for="cmbFilm" value="Film: " />
+                                            <p:selectOneMenu id="cmbFilm" value="#{mBIzborFilma.trenutniFilm}" converter="filmKNV" required="true">
+                                                <p:ajax event="change" update="cmbKopija"/>
+                                                <f:selectItem itemLabel="Izaberite film" itemValue="" noSelectionOption="false" />
+                                                <f:selectItems value="#{mBIzborFilma.listaFilmova}" var="film" itemValue="#{film}" itemLabel="#{film.naziv}" />
+
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="cmbKopija" value="Kopija: " />
+                                            <p:selectOneMenu id="cmbKopija" value="#{mBClan.zaduzenje.kopija}" converter="kopijaKNV" required="true">
+                                                <f:selectItems value="#{mBIzborFilma.trenutniFilm.kopijaList}" var="kopija" itemValue="#{kopija}" itemLabel="#{kopija.rbr}"/>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="calDatumZaduzenja" value="Datum zaduzenja" />
+                                            <p:calendar id="calDatumZaduzenja" pattern="dd.MM.yyyy" value="#{mBClan.zaduzenje.datumzaduzenja}" required="true"/>
+
+                                        </h:panelGrid>
+                                        <p:commandButton value="Dodaj zaduzenje" action="#{mBIzborFilma.sacuvajZaduzenje()}" update="@form :frmZaduzenjaClana"/>
+                                        <p:commandButton value="Otkazi" immediate="true" action="#{mBClan.otkaziZaduzenje()}" update="@form :frmZaduzenjaClana"/>
+                                    </p:panel>
+                                </p:dialog>
+                            </h:form>
+
+    </h:body>
+</html>
+
