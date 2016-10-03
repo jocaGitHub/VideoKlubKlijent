@@ -206,7 +206,7 @@ public class MBFilm implements Serializable{
 
     public void sacuvajUlogu() {
         System.out.println("sacuvajUlogu()");
-        System.out.println("/// trenutna uloga:" + trenutnaUloga);
+        System.out.println("/// trenutna uloga:" + trenutnaUloga+trenutnaUloga.getNazivuloge());
         Uloga u = trenutnaUloga;
         boolean postoji = false;
         for (Uloga ul : trenutniFilm.getUlogaList()) {
@@ -215,9 +215,11 @@ public class MBFilm implements Serializable{
                 break;
             }
         }
+        System.out.println("postoji u sacuvajuloga mbfilm"+postoji);
         if (postoji) {
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Upozorenje", poruka));
+            RequestContext.getCurrentInstance().showMessageInDialog(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Dodavanje uloge", "Vec postoji takva uloga"));
         } else {
             System.out.println("/// u: " + u);
             System.out.println("/// u.getosoba: " + u.getOsoba());
@@ -227,6 +229,7 @@ public class MBFilm implements Serializable{
             trenutniFilm.getUlogaList().add(trenutnaUloga);
             System.out.println("velicina liste uloga u filmu: " + trenutniFilm.getUlogaList().size());
             trenutnaUloga = new Uloga(new UlogaPK());
+            RequestContext.getCurrentInstance().showMessageInDialog(new FacesMessage(FacesMessage.SEVERITY_INFO, "Dodavanje uloge", "Uloga uspesno dodata"));
         }
     }
 
